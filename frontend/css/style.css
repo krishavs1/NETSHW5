@@ -13,6 +13,10 @@ body {
     line-height: 1.6;         /* a little more breathing room */
 }
 
+title {
+    font-size: 2.2rem;
+}
+
 /* 2. Constrain & center the “.container” */
 .container {
     max-width: 900px;         /* you decide how wide */
