@@ -1,18 +1,60 @@
-body {
-    background-color: #f8f9fa;
+/* 1. Make the whole page a flex container and center its content */
+html, body {
+    height: 100%;
+    margin: 0;
 }
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;      /* horizontal centering */
+    text-align: center;       /* center text by default */
+    background-color: #f8f9fa;
+    font-size: 1.2rem;        /* bump base font size 20% */
+    line-height: 1.6;         /* a little more breathing room */
+}
+
+/* 2. Constrain & center the “.container” */
+.container {
+    max-width: 900px;         /* you decide how wide */
+    width: 90%;
+    margin: 2rem auto;        /* vertical space + auto-center */
+}
+
+/* 3. Headings bigger */
 h2 {
     color: #004085;
+    font-size: 2rem;
+    margin-bottom: 1rem;
 }
-#distanceResult, #recResults {
+
+/* 4. Forms and labels & inputs larger */
+label,
+input.form-control,
+button {
+    font-size: 1.1rem;
+}
+
+/* 5. Tidy up the results panels */
+#distanceResult,
+#recResults {
     background: #fff;
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 0.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin: 1.5rem auto;
+    width: 100%;
 }
+
+/* 6. Recommendation cards inline and centered */
 .rec-card {
+    display: inline-block;     /* sit side by side */
+    width: 45%;                /* two per row roughly */
+    margin: 0.5rem;
+    padding: 1rem;
     border: 1px solid #dee2e6;
     border-radius: 0.5rem;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    font-size: 1.1rem;
+    background: #fff;
+    text-align: center;
 }
