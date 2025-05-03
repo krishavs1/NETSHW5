@@ -200,13 +200,15 @@
 
   <script>
     document.getElementById("signupForm").addEventListener("submit", e => {
-      e.preventDefault();
-      // collect + show success
-      const username = document.getElementById("username").value;
-      document.getElementById("signupStatus").innerHTML = 
-        `<p class="text-success">Thanks, <strong>${username}</strong>! Your account has been created.</p>`;
-      // TODO: build FormData & POST
-    });
+  e.preventDefault();
+  // simulate success…
+  document.getElementById("signupStatus").innerHTML =
+    `<p class="text-success">Account created! Taking you to dashboard...</p>`;
+  setTimeout(() => {
+    window.location.href = 'dashboard.html';
+  }, 800);
+});
+
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
