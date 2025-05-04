@@ -61,24 +61,21 @@
       Create your account
     </h1>
 
-    <form id="signupForm" novalidate>
+    <form id="signupForm" enctype="multipart/form-data" novalidate>
       <!-- Account Information -->
       <div class="row mb-5">
         <div class="col-md-4">
           <div class="section-header">Account information</div>
         </div>
         <div class="col-md-8">
-          <!-- Email -->
           <div class="mb-4">
             <label class="form-label" for="email">Email Address <span class="text-danger">*</span></label>
             <input type="email" id="email" class="form-control" required />
           </div>
-          <!-- Re-type Email -->
           <div class="mb-4">
             <label class="form-label" for="email2">Re-type Email Address <span class="text-danger">*</span></label>
             <input type="email" id="email2" class="form-control" required />
           </div>
-          <!-- Password -->
           <div class="mb-4">
             <label class="form-label" for="password">Password <span class="text-danger">*</span></label>
             <input type="password" id="password" class="form-control" required />
@@ -91,7 +88,6 @@
               &times; No spaces
             </div>
           </div>
-          <!-- Re-type Password -->
           <div class="mb-4">
             <label class="form-label" for="password2">Re-type Password <span class="text-danger">*</span></label>
             <input type="password" id="password2" class="form-control" required />
@@ -106,12 +102,10 @@
           <div class="section-header">Personal details</div>
         </div>
         <div class="col-md-8">
-          <!-- Username -->
           <div class="mb-4">
             <label class="form-label" for="username">Username <span class="text-danger">*</span></label>
             <input type="text" id="username" class="form-control" required />
           </div>
-          <!-- School / Major / Year -->
           <div class="row g-3 mb-4">
             <div class="col-md-4">
               <label class="form-label" for="school">School</label>
@@ -126,35 +120,21 @@
               <input type="number" id="gradYear" class="form-control" />
             </div>
           </div>
-          <!-- Interests -->
           <div class="mb-4">
             <label class="form-label" for="interests">Interests</label>
-            <input
-              type="text"
-              id="interests"
-              class="form-control"
-              placeholder="e.g., robotics, painting, biotech"
-            />
+            <input type="text" id="interests" class="form-control" placeholder="e.g., robotics, painting, biotech" />
           </div>
-          <!-- About You -->
           <div class="mb-4">
             <label class="form-label" for="bio">About You</label>
-            <textarea
-              id="bio"
-              class="form-control"
-              rows="3"
-              placeholder="Tell us a bit about yourself..."
-            ></textarea>
+            <textarea id="bio" class="form-control" rows="3" placeholder="Tell us a bit about yourself..."></textarea>
           </div>
-          <!-- Friends List -->
           <div class="mb-4">
             <label class="form-label" for="friendsText">Friends List</label>
-            <textarea
-              id="friendsText"
-              class="form-control"
-              rows="3"
-              placeholder="One per line or comma‑separated"
-            ></textarea>
+            <textarea id="friendsText" class="form-control" rows="3" placeholder="One per line or comma‑separated"></textarea>
+          </div>
+          <div class="mb-4">
+            <label class="form-label" for="resumeFile">Upload Resume (PDF)</label>
+            <input type="file" id="resumeFile" class="form-control" name="resumeFile" accept="application/pdf" required>
           </div>
         </div>
       </div>
@@ -199,16 +179,37 @@
   </div>
 
   <script>
-    document.getElementById("signupForm").addEventListener("submit", e => {
-  e.preventDefault();
-  // simulate success…
-  document.getElementById("signupStatus").innerHTML =
-    `<p class="text-success">Account created! Taking you to dashboard...</p>`;
-  setTimeout(() => {
-    window.location.href = 'dashboard.html';
-  }, 800);
-});
+    document.getElementById("signupForm").addEventListener("submit", async e => {
+      e.preventDefault();
 
+      const username = document.getElementById("username").value;
+      const resume = document.getElementById("resumeFile").files[0];
+
+      if (!resume) {
+        alert("Please upload a PDF resume.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("resumeFile", resume);
+
+      const res = await fetch("http://localhost:3000/api/upload-resume", {
+        method: "POST",
+        body: formData
+      });
+
+      if (res.ok) {
+        document.getElementById("signupStatus").innerHTML =
+          `<p class="text-success">Account created and resume processed! Redirecting...</p>`;
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1000);
+      } else {
+        document.getElementById("signupStatus").innerHTML =
+          `<p class="text-danger">Error uploading resume. Try again.</p>`;
+      }
+    });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.4.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
