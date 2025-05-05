@@ -1,5 +1,6 @@
 /* 1. Make the whole page a flex container and center its content */
 html, body {
+    font-family: 'Source Sans Pro', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     height: 100%;
     margin: 0;
 }
@@ -17,7 +18,7 @@ title {
     font-size: 2.2rem;
 }
 
-/* 2. Constrain & center the “.container” */
+/* 2. Constrain & center the ".container" */
 .container {
     max-width: 900px;         /* you decide how wide */
     width: 90%;
@@ -63,38 +64,93 @@ button {
     text-align: center;
 }
 
-/* SIGNUP CARD ENHANCEMENTS */
+/* Signup Card */
 .signup-card {
-    border: none;
+    width: 100%;
+    max-width: 800px;
     border-radius: 1rem;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
-    background-color: #ffffff;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.07);
+    background: #fff;
+    padding: 2rem;
+    margin: 2rem;
 }
-
+  
 .signup-header {
-    font-weight: 700;
-    font-size: 2.4rem;
+    font-size: 2.5rem;
     color: #0a66c2;
-    margin-bottom: 1rem;
+    font-weight: 700;
 }
-
-.signup-subtext {
-    color: #6c757d;
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
-}
-
-.form-label {
+  
+.section-header {
+    font-size: 1.25rem;
     font-weight: 600;
     color: #333;
+    margin-bottom: 1rem;
 }
-
+  
+.form-label {
+    font-weight: 500;
+    color: #333;
+}
+  
+.form-control {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+}
+  
+.hint-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0.5rem 0 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+  
+.hint-list li::before {
+    content: "✕";
+    margin-right: 0.5rem;
+}
+  
+.hint-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+  
 .btn-primary {
     background-color: #0a66c2;
-    border-color: #0a66c2;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
 }
-
+  
 .btn-primary:hover {
     background-color: #004182;
-    border-color: #004182;
+}
+  
+.btn-outline-info {
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    color: #0a66c2;
+    border-color: #0a66c2;
+}
+  
+.btn-outline-info:checked + .btn-outline-info,
+.btn-outline-info:hover {
+    background-color: #e1effe;
+}
+
+/* —— SPACING ADJUSTMENTS —— */
+.form-section {
+  margin-bottom: 3rem;    /* space between big sections */
+}
+.form-section .mb-4 {
+  margin-bottom: 1.5rem;  /* space between fields */
+}
+hr {
+  margin: 2.5rem 0;
 }
