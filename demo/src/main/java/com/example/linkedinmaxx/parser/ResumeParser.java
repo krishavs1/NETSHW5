@@ -10,160 +10,134 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * A generic résumé–text parser.  Finds any top‑level ALL‑CAPS headings,
- * matches them to one of our Section types, and pulls out each section’s block.
+ * A résumé parser that splits the document into logical sections
+ * based on flexible header patterns, without requiring strict ALL-CAPS.
  */
 public class ResumeParser {
 
-  public enum Section {
-    EXPERIENCE,
-    EDUCATION,
-    SKILLS,
-    AWARDS,
-    PROJECTS
-  }
+    public enum Section {
+        EXPERIENCE,
+        EDUCATION,
+        SKILLS,
+        AWARDS,
+        PROJECTS
+    }
 
-  // —— header‑matching patterns for each Section ——  
-  private static final Map<Section, List<Pattern>> HEADER_PATTERNS = Map.of(
-    Section.EXPERIENCE, List.of(
-      Pattern.compile("(?i)^(Work|Professional|Employment)\\s+Experience.*"),
-      Pattern.compile("(?i)^Experience(s)?\\b.*"),
-      Pattern.compile("(?i)^(Internship|Projects?)\\b.*")
-    ),
-    Section.EDUCATION, List.of(
-      Pattern.compile("(?i)^Education\\b.*"),
-      Pattern.compile("(?i)^(Academic|Training)\\s+Background.*")
-    ),
-    Section.SKILLS, List.of(
-      Pattern.compile("(?i)^Skills?\\b.*"),
-      Pattern.compile("(?i)^(Technical Skills|Core Competencies)\\b.*"),
-      Pattern.compile("(?i)^(Certifications?)\\b.*"),
-      Pattern.compile("(?i)^(Tools|Technologies|Tech\\s*Stack)\\b.*")
-    ),
-    Section.AWARDS, List.of(
-      Pattern.compile("(?i)^Awards?\\b.*"),
-      Pattern.compile("(?i)^(Honors?|Recognition)\\b.*")
-    ),
-    Section.PROJECTS, List.of(
-      Pattern.compile("(?i)^Projects?\\b.*"),
-      Pattern.compile("(?i)^(Leadership|Activities)\\b.*")
-    )
-  );
+    // Patterns to detect the start of each section (case-insensitive).
+    private static final Map<Section, List<Pattern>> HEADER_PATTERNS = Map.of(
+        Section.EXPERIENCE, List.of(
+            Pattern.compile("(?i)^\\s*(Work|Professional|Employment)\\s+Experience[:\\s]?.*"),
+            Pattern.compile("(?i)^\\s*Experience(s)?[:\\s]?.*"),
+            Pattern.compile("(?i)^\\s*(Internship|Projects?)[:\\s]?.*")
+        ),
+        Section.EDUCATION, List.of(
+            Pattern.compile("(?i)^\\s*Education[:\\s]?.*"),
+            Pattern.compile("(?i)^\\s*(Academic|Training)\\s+Background[:\\s]?.*")
+        ),
+        Section.SKILLS, List.of(
+            Pattern.compile("(?i)^\\s*Skills?[:\\s]?.*"),
+            Pattern.compile("(?i)^\\s*(Technical Skills|Core Competencies)[:\\s]?.*"),
+            Pattern.compile("(?i)^\\s*(Certifications?)[:\\s]?.*"),
+            Pattern.compile("(?i)^\\s*(Tools|Technologies|Tech\\s*Stack)[:\\s]?.*")
+        ),
+        Section.AWARDS, List.of(
+            Pattern.compile("(?i)^\\s*Awards?[:\\s]?.*"),
+            Pattern.compile("(?i)^\\s*(Honors?|Recognition)[:\\s]?.*")
+        ),
+        Section.PROJECTS, List.of(
+            Pattern.compile("(?i)^\\s*Projects?[:\\s]?.*"),
+            Pattern.compile("(?i)^\\s*(Leadership|Activities)[:\\s]?.*")
+        )
+    );
 
-  private final String fullText;
-  private final Map<Section,String> sections;
+    private final Map<Section, String> sections;
+    private final String fullText;
 
-  /**
-   * Parse the given PDF (or plain‑text) stream into sections.
-   */
-  public ResumeParser(InputStream pdfStream) throws IOException, TikaException {
-    this.fullText = extractText(pdfStream);
-    this.sections = splitIntoSections(fullText);
-  }
+    public ResumeParser(InputStream in) throws IOException, TikaException {
+        this.fullText = extractText(in);
+        this.sections = splitIntoSections(fullText);
+    }
 
-  /** Return the raw block of text under an ALL‑CAPS Experience header (or empty). */
-  public List<String> getExperiences() {
-    return splitBlock(sections.get(Section.EXPERIENCE));
-  }
+    public List<String> getExperiences() {
+        return splitBlock(sections.getOrDefault(Section.EXPERIENCE, ""));
+    }
 
-  /** Return the raw block of text under an ALL‑CAPS Education header (or empty). */
-  public List<String> getEducation() {
-    return splitBlock(sections.get(Section.EDUCATION));
-  }
+    public List<String> getEducation() {
+        return splitBlock(sections.getOrDefault(Section.EDUCATION, ""));
+    }
 
-  /**
-   * Returns a de‑duplicated set of skills/tokens by splitting on comma/semicolon/newline.
-   */
-  public Set<String> getSkills() {
-    String blk = sections.get(Section.SKILLS);
-    if (blk == null || blk.isBlank()) return Collections.emptySet();
+    public Set<String> getSkills() {
+        String block = sections.getOrDefault(Section.SKILLS, "");
+        if (block.isBlank()) return Collections.emptySet();
+        return Arrays.stream(block.split("[,;\\r?\\n]+"))
+                .map(String::trim)
+                .filter(tok -> tok.length() > 1)
+                .filter(tok -> !tok.matches("https?://.*"))
+                .filter(tok -> !tok.matches(".*\\.[a-z]{2,4}(/.*)?$"))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
 
-    return Arrays.stream(blk.split("[,;\\r?\\n]+"))
-                 .map(String::trim)
-                 .filter(tok -> tok.length() > 1)
-                 .filter(tok -> !tok.matches("https?://.*"))
-                 .filter(tok -> !tok.matches(".*\\.[a-z]{2,4}(/.*)?$"))
-                 .collect(Collectors.toCollection(LinkedHashSet::new));
-  }
+    public List<String> getAwards() {
+        return splitBlock(sections.getOrDefault(Section.AWARDS, ""));
+    }
 
-  /** Awards/Honors section as a list of lines/bullets. */
-  public List<String> getAwards() {
-    return splitBlock(sections.get(Section.AWARDS));
-  }
+    public List<String> getProjects() {
+        return splitBlock(sections.getOrDefault(Section.PROJECTS, ""));
+    }
 
-  /** Projects / Leadership block as a list of lines/bullets. */
-  public List<String> getProjects() {
-    return splitBlock(sections.get(Section.PROJECTS));
-  }
+    private static String extractText(InputStream in) throws IOException, TikaException {
+        return new Tika().parseToString(in);
+    }
 
-  // ───────────────────────────────────────────────────────────────────────────
+    private static Map<Section, String> splitIntoSections(String text) {
+        String[] lines = text.split("\\r?\\n");
+        Map<Integer, Section> headerIndices = new TreeMap<>();
 
-  /** Use Tika to extract text from PDF (or fall back to raw stream). */
-  private static String extractText(InputStream in) throws IOException, TikaException {
-    return new Tika().parseToString(in);
-  }
-
-  /**
-   * 1) Find every ALL‑CAPS line that matches one of our Section patterns.  
-   * 2) Chop the text between that header and the next header.  
-   */
-  private static Map<Section,String> splitIntoSections(String text) {
-    String[] lines = text.split("\\r?\\n");
-    // collect header‐line indices → Section
-    TreeMap<Integer,Section> headers = new TreeMap<>();
-    Pattern allCaps = Pattern.compile("^[A-Z0-9 &\\-,'/]+$");
-    for (int i = 0; i < lines.length; i++) {
-      String L = lines[i].trim();
-      if (!allCaps.matcher(L).matches()) continue;
-      for (var entry : HEADER_PATTERNS.entrySet()) {
-        for (Pattern p : entry.getValue()) {
-          if (p.matcher(L).find()) {
-            headers.put(i, entry.getKey());
-            break;
-          }
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i].trim();
+            for (var entry : HEADER_PATTERNS.entrySet()) {
+                for (Pattern pattern : entry.getValue()) {
+                    if (pattern.matcher(line).find()) {
+                        headerIndices.put(i, entry.getKey());
+                        break;
+                    }
+                }
+                if (headerIndices.containsKey(i)) break;
+            }
         }
-        if (headers.containsKey(i)) break;
-      }
+
+        Map<Section, String> result = new EnumMap<>(Section.class);
+        List<Integer> positions = new ArrayList<>(headerIndices.keySet());
+
+        for (int idx = 0; idx < positions.size(); idx++) {
+            int start = positions.get(idx);
+            int end = (idx + 1 < positions.size() ? positions.get(idx + 1) : lines.length);
+            Section sec = headerIndices.get(start);
+
+            StringBuilder sb = new StringBuilder();
+            for (int j = start + 1; j < end; j++) {
+                sb.append(lines[j]).append("\n");
+            }
+            result.put(sec, sb.toString().trim());
+        }
+
+        return result;
     }
 
-    // now slice out each block
-    Map<Section,String> result = new EnumMap<>(Section.class);
-    List<Integer> idxs = new ArrayList<>(headers.keySet());
-    for (int k = 0; k < idxs.size(); k++) {
-      int start = idxs.get(k);
-      int end   = (k + 1 < idxs.size() ? idxs.get(k+1) : lines.length);
-      Section sec = headers.get(start);
-
-      StringBuilder sb = new StringBuilder();
-      for (int j = start+1; j < end; j++) {
-        sb.append(lines[j]).append("\n");
-      }
-      result.put(sec, sb.toString().trim());
+    private static List<String> splitBlock(String block) {
+        if (block == null || block.isBlank()) return Collections.emptyList();
+        String[] raw = block.split("\\r?\\n");
+        if (raw.length == 1 && raw[0].contains(",")) {
+            return Arrays.stream(raw[0].split(","))
+                    .map(String::trim)
+                    .filter(l -> !l.isEmpty())
+                    .collect(Collectors.toList());
+        }
+        List<String> items = new ArrayList<>();
+        for (String line : raw) {
+            String cleaned = line.trim().replaceAll("^[•\\-*]+\\s*", "");
+            if (!cleaned.isEmpty()) items.add(cleaned);
+        }
+        return items;
     }
-    return result;
-  }
-
-  /**
-   * Turn a block of free‑form text into a list of cleaned bullets/lines.
-   *   - splits on newlines (or on commas if it’s one‐liner)
-   *   - strips any leading “•” or “-”
-   */
-  private static List<String> splitBlock(String block) {
-    if (block == null || block.isBlank()) return Collections.emptyList();
-    String[] raw = block.split("\\r?\\n");
-    // if there’s exactly one line and it contains commas, split on commas
-    if (raw.length == 1 && raw[0].contains(",")) {
-      return Arrays.stream(raw[0].split(","))
-                   .map(String::trim)
-                   .filter(l -> !l.isEmpty())
-                   .collect(Collectors.toList());
-    }
-    // otherwise treat each line as one item
-    List<String> items = new ArrayList<>();
-    for (String ln : raw) {
-      String t = ln.trim().replaceAll("^[•\\-*]+\\s*", "");
-      if (!t.isEmpty()) items.add(t);
-    }
-    return items;
-  }
 }

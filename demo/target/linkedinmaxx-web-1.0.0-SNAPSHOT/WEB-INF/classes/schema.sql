@@ -23,11 +23,6 @@ CREATE TABLE skills (
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
   skill   TEXT
 );
-CREATE TABLE hobbies (
-  id      SERIAL PRIMARY KEY,
-  user_id INT REFERENCES users(id) ON DELETE CASCADE,
-  hobby   TEXT
-);
 
 -- friendships
 CREATE TABLE friendships (
