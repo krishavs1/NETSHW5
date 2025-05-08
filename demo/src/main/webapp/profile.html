@@ -40,7 +40,6 @@
       <div id="distance" class="h5 text-secondary mt-2"></div>
     </div>
 
-    <!-- About / Contact -->
     <div class="card section-card">
       <div class="card-header">About</div>
       <div class="card-body">
@@ -53,26 +52,22 @@
       </div>
     </div>
 
-    <!-- Experiences -->
     <div class="card section-card">
       <div class="card-header">Experiences</div>
       <ul id="expList" class="list-group list-group-flush"></ul>
     </div>
 
-    <!-- Skills -->
     <div class="card section-card">
       <div class="card-header">Skills</div>
       <ul id="skillList" class="list-group list-group-flush"></ul>
     </div>
 
-    <!-- Become friends button -->
     <div class="text-center mt-4">
       <button id="befriendBtn" class="btn btn-success">
         Become friends with <span id="befriendName"></span>!
       </button>
     </div>
 
-    <!-- Back to recommendations -->
     <div class="text-center mt-4">
       <a href="recommend.html" class="btn btn-outline-primary">← Back to Recommendations</a>
     </div>
@@ -96,7 +91,7 @@
 
       const data = await res.json();
 
-      // Compile shared word set (lowercased)
+      
       const sharedWords = new Set();
       (data.sharedExperiences || []).forEach(text =>
         text.split(/\W+/).forEach(w => w.trim() && sharedWords.add(w.toLowerCase()))
@@ -105,7 +100,7 @@
         text.split(/\W+/).forEach(w => w.trim() && sharedWords.add(w.toLowerCase()))
       );
 
-      // Highlight function
+      // highlight function
       function highlight(text) {
         return text.replace(/\b(\w+)\b/g, (match) =>
           sharedWords.has(match.toLowerCase())
@@ -114,13 +109,13 @@
         );
       }
 
-      // Header info
+      //  info for headers
       document.getElementById('name').textContent = data.username;
       document.getElementById('distance').innerHTML =
         `<strong>Distance:</strong> ${data.distance}<br>` +
         `<strong>Path:</strong> ${data.path.join(' → ')}`;
 
-      // About
+      
       document.getElementById('email').textContent     = data.email     || '—';
       document.getElementById('school').textContent    = data.school    || '—';
       document.getElementById('major').textContent     = data.major     || '—';
@@ -128,7 +123,7 @@
       document.getElementById('interests').textContent = data.interests || '—';
       document.getElementById('bio').textContent       = data.bio       || '—';
 
-      // Render Experiences
+     
       const expList = document.getElementById('expList');
       (data.experiences || []).forEach(exp => {
         const li = document.createElement('li');
@@ -137,7 +132,7 @@
         expList.appendChild(li);
       });
 
-      // Render Skills
+    
       const skillList = document.getElementById('skillList');
       (data.skills || []).forEach(skill => {
         const li = document.createElement('li');
@@ -146,12 +141,12 @@
         skillList.appendChild(li);
       });
 
-      // Hide befriend if direct friend
+      
       if (data.distance === 1) {
         document.getElementById('befriendBtn').style.display = 'none';
       }
 
-      // Setup befriend name
+      
       document.getElementById('befriendName').textContent = data.username;
     }
 
