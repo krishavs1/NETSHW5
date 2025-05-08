@@ -25,7 +25,8 @@ public class ResumeParser {
         Section.EXPERIENCE, List.of(
             Pattern.compile("(?i)^\\s*(Work|Professional|Employment)\\s+Experience[:\\s]?.*"),
             Pattern.compile("(?i)^\\s*Experience(s)?[:\\s]?.*"),
-            Pattern.compile("(?i)^\\s*(Internship|Projects?)[:\\s]?.*")
+            Pattern.compile("(?i)^\\s*Relevant\\s+Experience[:\\s]?.*"),
+            Pattern.compile("(?i)^\\s*(Internship|Internships)\\b.*")
         ),
         Section.EDUCATION, List.of(
             Pattern.compile("(?i)^\\s*Education[:\\s]?.*"),
