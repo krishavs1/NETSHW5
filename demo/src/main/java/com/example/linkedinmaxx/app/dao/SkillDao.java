@@ -4,9 +4,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO for inserting and querying user skills in the database.
- */
+//DAO for inserting and querying user skills in the database.
+
 public class SkillDao {
 
     /**

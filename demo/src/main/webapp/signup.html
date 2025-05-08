@@ -49,9 +49,8 @@
         placeholder="Enter your email"
         required
       />
-    </div> <!-- ←– THIS closing tag was missing -->
+    </div>
   
-    <!-- Password wrapper -->
     <div class="mb-4">
       <label class="form-label" for="password">
         Password <span class="text-danger">*</span>
@@ -66,7 +65,7 @@
       />
     </div>
   
-    <!-- Re‑type Password wrapper -->
+  
     <div class="mb-4">
       <label class="form-label" for="password2">
         Re‑type Password <span class="text-danger">*</span>
@@ -170,19 +169,19 @@
       <hr />
 
       <div class="form-section row align-items-start mb-5">
-        <!-- Left header -->
+        
         <div class="col-md-4">
           <div class="section-header">Data for LinkedInMaxx</div>
         </div>
       
-        <!-- Right side -->
+      
         <div class="col-md-8">
       
-          <!-- Friends’ Usernames row -->
+   
           <div class="row align-items-center mb-4">
             <label for="friendsText"
                   class="col-sm-4 col-form-label text-sm-end">
-              Friends’ <strong>Usernames</strong> 
+              Friends’ <strong>Usernames</strong> (must already exist in database)
               <span class="text-muted">(comma‑separated)</span>
             </label>
             <div class="col-sm-8">
@@ -197,7 +196,6 @@
           </div>
 
       
-          <!-- Resume Upload row -->
           <div class="row align-items-center mb-4">
             <label for="resumeFile"
                    class="col-sm-4 col-form-label text-sm-end">
@@ -240,11 +238,11 @@
   
     form.addEventListener("submit", async e => {
       e.preventDefault();
-      statusDiv.innerHTML = "";       // clear any previous error
+      statusDiv.innerHTML = "";    
   
       const resp = await fetch("/api/signup", {
         method: "POST",
-        credentials: "same-origin",    // ← make the browser save the JSESSIONID
+        credentials: "same-origin",    
         body: new FormData(form)
       });
   
@@ -296,7 +294,6 @@
     pw1.addEventListener('input', validatePasswords);
     pw2.addEventListener('input', validatePasswords);
   
-    // also run once on page‑load in case there's a prefill
     validatePasswords();
   </script>
   

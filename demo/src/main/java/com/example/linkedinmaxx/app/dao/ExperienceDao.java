@@ -4,9 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO for inserting and querying user experience entries in the database.
- */
+//DAO for inserting and querying user experience entries in the database.
 public class ExperienceDao {
 
     /**
@@ -33,7 +31,7 @@ public class ExperienceDao {
      * Retrieves all experience entries for the given user.
      *
      * @param userId the user’s database ID
-     * @return a List of experience strings (in insertion order)
+     * @return a List of experience strings
      * @throws SQLException if anything goes wrong with the query
      */
     public List<String> findByUser(int userId) throws SQLException {

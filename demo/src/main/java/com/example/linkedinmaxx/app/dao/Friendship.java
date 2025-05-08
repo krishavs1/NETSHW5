@@ -1,4 +1,3 @@
-// demo/src/main/java/com/example/linkedinmaxx/app/dao/Friendship.java
 package com.example.linkedinmaxx.app.dao;
 
 public class Friendship {

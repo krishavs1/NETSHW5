@@ -38,7 +38,6 @@
   </div>
 
   <script>
-    // wait until the DOM is parsed
     window.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('loginForm');
       const err  = document.getElementById('loginError');
@@ -69,7 +68,6 @@
             return;
           }
 
-          // success!
           window.location.href = 'dashboard.html';
 
         } catch (networkErr) {

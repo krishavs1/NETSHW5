@@ -1,4 +1,3 @@
-// src/main/java/com/example/linkedinmaxx/app/FriendServlet.java
 package com.example.linkedinmaxx.app;
 
 import com.example.linkedinmaxx.app.dao.FriendshipDao;
@@ -31,7 +30,7 @@ public class FriendServlet extends HttpServlet {
     }
     int me = (Integer) session.getAttribute("userId");
 
-    // parse JSON body: { "user": "alice" }
+    
     Map<String,String> body = gson.fromJson(new BufferedReader(req.getReader()), Map.class);
     String otherName = body.get("user");
     if (otherName == null) {
@@ -47,7 +46,7 @@ public class FriendServlet extends HttpServlet {
       }
       int otherId = maybe.get().getId();
 
-      // create bidirectional friendship
+      
       friendshipDao.add(me, otherId);
       friendshipDao.add(otherId, me);
 

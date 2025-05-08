@@ -41,7 +41,7 @@ public class RecommendServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    // 0) Get current user from session
+    // Get the current user from da session
     HttpSession session = req.getSession(false);
     if (session == null || session.getAttribute("userId") == null) {
       resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Not logged in");
@@ -50,10 +50,10 @@ public class RecommendServlet extends HttpServlet {
     int me = (Integer) session.getAttribute("userId");
 
     try {
-      // 1) Compute BFS distances
+      // Computes the BFS distances using a helper function that I defined below
       Map<Integer,Integer> dist = computeFriendDistances(me);
 
-      // 2) Score every reachable, non‑self user (excluding direct friends and zero similarity)
+      // This scores every reachable, non‑self user (excluding friends and people with zero similarity)
       List<Recommendation> recs = new ArrayList<>();
       for (User u : userDao.findAll()) {
         int other = u.getId();
@@ -71,11 +71,11 @@ public class RecommendServlet extends HttpServlet {
         recs.add(new Recommendation(other, u.getUsername(), score));
       }
 
-      // 3) Sort descending by score & take top 2
+      // Sort descending by score & take top 2
       recs.sort((a, b) -> Double.compare(b.score, a.score));
       List<Recommendation> top2 = recs.stream().limit(2).toList();
 
-      // 4) Return JSON
+      // Return a JSON
       resp.setContentType("application/json");
       resp.getWriter().write(gson.toJson(top2));
 
@@ -88,9 +88,7 @@ public class RecommendServlet extends HttpServlet {
     }
   }
 
-  /**
-   * Standard BFS to get shortest path lengths from `start` to every other user.
-   */
+  //Standard BFS to get shortest path lengths from `start` to every other user.
   private Map<Integer,Integer> computeFriendDistances(int start) throws SQLException {
     Queue<Integer> q = new ArrayDeque<>();
     Map<Integer,Integer> dist = new HashMap<>();
@@ -110,7 +108,7 @@ public class RecommendServlet extends HttpServlet {
     return dist;
   }
 
-  /** Simple DTO for a recommendation */
+  // Simple DTO for a recommendation 
   public static class Recommendation {
     public final int    id;
     public final String username;

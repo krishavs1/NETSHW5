@@ -22,7 +22,7 @@ public class LoginServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    // read JSON body { "username": "..." }
+    // read json body
     Map<String, String> body = gson.fromJson(
       new BufferedReader(req.getReader()), Map.class
     );

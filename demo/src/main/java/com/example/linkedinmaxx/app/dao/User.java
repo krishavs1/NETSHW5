@@ -1,8 +1,6 @@
 package com.example.linkedinmaxx.app.dao;
 
-/**
- * Simple POJO that represents one row in the users table.
- */
+
 public class User {
     private final int    id;
     private final String email;
@@ -37,52 +35,52 @@ public class User {
         this.registered   = registered;
     }
 
-    /** The database‑generated primary key. */
+   
     public int getId() {
         return id;
     }
 
-    /** User’s email address (unique). */
+    
     public String getEmail() {
         return email;
     }
 
-    /** The bcrypt hash of the user’s password. */
+ 
     public String getPasswordHash() {
         return passwordHash;
     }
 
-    /** User’s chosen (unique) handle. */
+
     public String getUsername() {
         return username;
     }
 
-    /** School name (nullable). */
+
     public String getSchool() {
         return school;
     }
 
-    /** Major field of study (nullable). */
+
     public String getMajor() {
         return major;
     }
 
-    /** Graduation year (nullable). */
+
     public Integer getGradYear() {
         return gradYear;
     }
 
-    /** Comma‑separated interests string (nullable). */
+
     public String getInterests() {
         return interests;
     }
 
-    /** Bio or about‑me text (nullable). */
+
     public String getBio() {
         return bio;
     }
 
-    /** Indicates whether the user completed registration. */
+
     public boolean isRegistered() {
         return registered;
     }

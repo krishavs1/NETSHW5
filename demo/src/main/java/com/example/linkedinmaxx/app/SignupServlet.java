@@ -16,10 +16,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-/**
- * Handles new‐user signups: parses their form & uploaded resume,
- * persists everything via DAOs, and returns the parsed resume JSON.
- */
+//Handles new‐user signups: parses their form & uploaded resume, persists everything via DAOs, and then returns the parsed resume JSON.
+
 @WebServlet("/api/signup")
 @MultipartConfig
 public class SignupServlet extends HttpServlet {
@@ -32,7 +30,7 @@ public class SignupServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        // 1) Extract form fields (no DB calls here)
+        //  Extract form fields
         String email      = req.getParameter("email");
         String password   = req.getParameter("password");
         String password2  = req.getParameter("password2");
@@ -44,7 +42,7 @@ public class SignupServlet extends HttpServlet {
         String bio        = req.getParameter("bio");
         String friendsTxt = req.getParameter("friendsText");
 
-        // 2) Validate required fields (still no DB calls)
+        // validate required fields 
         if (email == null || username == null || password == null) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
                     "Email, username & password are required");
@@ -56,7 +54,7 @@ public class SignupServlet extends HttpServlet {
             return;
         }
 
-        // 3) Parse graduation year
+        // get the grad year
         Integer gradYear = null;
         if (gradYearS != null && !gradYearS.isBlank()) {
             try {
@@ -68,7 +66,7 @@ public class SignupServlet extends HttpServlet {
             }
         }
 
-        // 4) Parse resume PDF (no DB calls)
+        // parse resume
         Part resumePart = req.getPart("resumeFile");
         if (resumePart == null) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
@@ -88,10 +86,10 @@ public class SignupServlet extends HttpServlet {
             return;
         }
 
-        // Everything that touches the database goes inside this try/catch
+      
         int userId;
         try {
-            // 5) Check duplicates
+            // Check duplicates
             if (userDao.existsByEmail(email)) {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.setContentType("text/plain");
@@ -105,37 +103,35 @@ public class SignupServlet extends HttpServlet {
                 return;
             }
 
-            // 6) Resolve friends → IDs
-            // 4) Resolve friends → IDs, but collect _all_ invalid usernames
-List<String> friendUsernames = Arrays.stream(
-    Optional.ofNullable(friendsTxt).orElse("")
-        .split(","))
-  .map(String::trim)
-  .filter(s -> !s.isEmpty())
-  .collect(Collectors.toList());
+        
+            List<String> friendUsernames = Arrays.stream(
+                Optional.ofNullable(friendsTxt).orElse("")
+                    .split(","))
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .collect(Collectors.toList());
 
-List<Integer>  friendIds   = new ArrayList<>();
-List<String>   invalid     = new ArrayList<>();
+            List<Integer>  friendIds   = new ArrayList<>();
+            List<String>   invalid     = new ArrayList<>();
 
-for (String fu : friendUsernames) {
-  userDao.findByUsername(fu)
-         .ifPresentOrElse(
-           user -> friendIds.add(user.getId()),
-           ()   -> invalid.add(fu)
-         );
-}
+            for (String fu : friendUsernames) {
+            userDao.findByUsername(fu)
+                    .ifPresentOrElse(
+                    user -> friendIds.add(user.getId()),
+                    ()   -> invalid.add(fu)
+                    );
+            }
 
-if (!invalid.isEmpty()) {
-    String msg = "These usernames are not valid: " + String.join(", ", invalid);
-    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    resp.setContentType("text/plain");
-    resp.getWriter().write(msg);
-    return;
-  }
-// at this point friendIds only contains the ones that _did_ exist
+            if (!invalid.isEmpty()) {
+                String msg = "These usernames are not valid: " + String.join(", ", invalid);
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.setContentType("text/plain");
+                resp.getWriter().write(msg);
+                return;
+            }
 
 
-            // 7) Hash password & create user
+            // encrypt the password & create user
             String hash = BCrypt.hashpw(password, BCrypt.gensalt());
             userId = userDao.create(
                 email, hash, username, school, major, gradYear, interests, bio
@@ -144,11 +140,11 @@ if (!invalid.isEmpty()) {
             session.setAttribute("userId", userId);
             session.setAttribute("username", username);
 
-            // 8) Persist resume pieces
+            // store resume pieces
             for (String e : experiences) expDao.save(userId, e);
             for (String s : skills)     skillDao.save(userId, s);
 
-            // 9) Persist friendships bidirectionally
+            // store friendships
             for (int fid : friendIds) {
                 friendDao.add(userId, fid);
                 friendDao.add(fid, userId);
@@ -161,7 +157,7 @@ if (!invalid.isEmpty()) {
             return;
         }
 
-        // 10) Return parsed JSON
+        // return parsed JSON
         resp.setContentType("application/json");
         resp.getWriter().write("{" +
                 "\"experiences\":" + toJsonArray(experiences) + "," +

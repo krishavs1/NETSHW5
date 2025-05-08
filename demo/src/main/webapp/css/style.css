@@ -1,4 +1,3 @@
-/* 1. Make the whole page a flex container and center its content */
 html, body {
     font-family: 'Source Sans Pro', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     height: 100%;
@@ -7,25 +6,25 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
-    align-items: center;      /* horizontal centering */
-    text-align: center;       /* center text by default */
+    align-items: center;     
+    text-align: center;       
     background-color: #f8f9fa;
-    font-size: 1.2rem;        /* bump base font size 20% */
-    line-height: 1.6;         /* a little more breathing room */
+    font-size: 1.2rem;       
+    line-height: 1.6;        
 }
 
 title {
     font-size: 2.2rem;
 }
 
-/* 2. Constrain & center the ".container" */
+
 .container {
-    max-width: 900px;         /* you decide how wide */
+    max-width: 900px;  
     width: 90%;
-    margin: 2rem auto;        /* vertical space + auto-center */
+    margin: 2rem auto;       
 }
 
-/* 3. Headings bigger */
+
 h2 {
     color: #004085;
     font-size: 2rem;

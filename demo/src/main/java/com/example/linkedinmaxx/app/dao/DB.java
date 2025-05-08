@@ -6,17 +6,17 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public class DB {
-    // JDBC URL for the LinkedInMaxx database with a sensible default
+    // URL for the LinkedInMaxx database
     private static final String URL = Optional
         .ofNullable(System.getenv("DB_URL"))
         .orElse("jdbc:postgresql://localhost:5432/linkedinmaxx");
 
-    // Database user: default to your OS/DB user
+    // Database user
     private static final String USER = Optional
         .ofNullable(System.getenv("DB_USER"))
         .orElse("krishavsingla");
 
-    // Database password: default to "password" for local dev
+    // Database password
     private static final String PASS = Optional
         .ofNullable(System.getenv("DB_PASS"))
         .orElse("password");
@@ -29,16 +29,13 @@ public class DB {
         }
     }
 
-    /**
-     * Get a new connection to the database, using URL, USER, PASS.
-     */
+    //Get a new connection to the database
+
     public static Connection get() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASS);
     }
 
-    /**
-     * Alias for get(); some DAOs expect getConnection().
-     */
+    
     public static Connection getConnection() throws SQLException {
         return get();
     }

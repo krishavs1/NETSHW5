@@ -1,4 +1,3 @@
-// src/main/java/com/example/linkedinmaxx/app/dao/UserDao.java
 package com.example.linkedinmaxx.app.dao;
 
 import java.sql.Connection;
@@ -15,7 +14,7 @@ import java.util.Optional;
  */
 public class UserDao {
 
-  /** Quickly test whether any user has this email. */
+  //quickly test whether any user has this email
   public boolean existsByEmail(String email) throws SQLException {
     String sql = "SELECT 1 FROM users WHERE email = ?";
     try (Connection c = DB.get();
@@ -27,7 +26,7 @@ public class UserDao {
     }
   }
 
-  /** Quickly test whether any user has this username. */
+ 
   public boolean existsByUsername(String username) throws SQLException {
     String sql = "SELECT 1 FROM users WHERE username = ?";
     try (Connection c = DB.get();
@@ -39,9 +38,7 @@ public class UserDao {
     }
   }
 
-  /**
-   * Look up one user by their username.
-   */
+  // Look up a user by their username.
   public Optional<User> findByUsername(String username) throws SQLException {
     String sql = """
       SELECT id,email,password,username,school,major,grad_year,interests,bio,registered
@@ -58,9 +55,7 @@ public class UserDao {
     }
   }
 
-  /**
-   * Fetch every user in the table.
-   */
+  //Fetch every user in the table
   public List<User> findAll() throws SQLException {
     String sql = """
       SELECT id,email,password,username,school,major,grad_year,interests,bio,registered
@@ -78,9 +73,7 @@ public class UserDao {
     }
   }
 
-  /**
-   * Create a new user row and return its generated ID.
-   */
+  //Create a new user row and return its generated ID.
   public int create(String email,
                     String hashedPw,
                     String username,
@@ -118,9 +111,8 @@ public class UserDao {
     }
   }
 
-  /**
-   * Look up one user by their numeric ID (full object).
-   */
+  //Look up one user by their numeric id
+
   public Optional<User> findById(int id) throws SQLException {
     String sql = """
       SELECT id,email,password,username,school,major,grad_year,interests,bio,registered
@@ -138,9 +130,7 @@ public class UserDao {
     }
   }
 
-  /**
-   * Helper: map the current ResultSet row to a User POJO.
-   */
+ 
   private User mapRowToUser(ResultSet rs) throws SQLException {
     return new User(
       rs.getInt("id"),
@@ -156,7 +146,7 @@ public class UserDao {
     );
   }
 
-  /** Look up one user by email. */
+ 
   public Optional<User> findByEmail(String email) throws SQLException {
     String sql = """
       SELECT id,email,password,username,school,major,grad_year,interests,bio,registered

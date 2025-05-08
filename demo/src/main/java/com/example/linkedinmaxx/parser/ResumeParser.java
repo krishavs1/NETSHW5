@@ -9,10 +9,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-/**
- * A résumé parser that splits the document into logical sections
- * based on flexible header patterns, without requiring strict ALL-CAPS.
- */
+// resume parser 
 public class ResumeParser {
 
     public enum Section {
@@ -23,7 +20,7 @@ public class ResumeParser {
         PROJECTS
     }
 
-    // Patterns to detect the start of each section (case-insensitive).
+    // patterns to detect the start of each section 
     private static final Map<Section, List<Pattern>> HEADER_PATTERNS = Map.of(
         Section.EXPERIENCE, List.of(
             Pattern.compile("(?i)^\\s*(Work|Professional|Employment)\\s+Experience[:\\s]?.*"),

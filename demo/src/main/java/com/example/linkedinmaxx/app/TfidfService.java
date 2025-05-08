@@ -17,10 +17,7 @@ import java.io.StringReader;
 import java.sql.SQLException;
 import java.util.*;
 
-/**
- * Builds TF–IDF vectors for each user’s profile (experiences + skills),
- * then allows cosine similarity lookups.
- */
+//Builds TF–IDF vectors for each user’s profile (experiences + skills), then allows cosine similarity lookups.
 public class TfidfService {
   private final Map<Integer, RealVector> userVectors = new HashMap<>();
   private final List<String> vocabulary  = new ArrayList<>();
@@ -34,7 +31,7 @@ public class TfidfService {
                       SkillDao skillDao,
                       ExperienceDao expDao)
       throws SQLException, IOException {
-    // 1) Gather each user's combined text
+    // get each user's combined text
     Map<Integer,String> docs = new HashMap<>();
     for (User u : userDao.findAll()) {
       int id = u.getId();
@@ -43,7 +40,7 @@ public class TfidfService {
       docs.put(id, expText + " " + skillText);
     }
 
-    // 2) Tokenize all docs, compute TF and DF
+    // tokenize all docs and compute TF and DF
     Analyzer analyzer = new StandardAnalyzer();
     Map<String,Integer> docFreq = new HashMap<>();
     Map<Integer, Map<String,Integer>> termFreqs = new HashMap<>();
@@ -70,12 +67,12 @@ public class TfidfService {
     }
     analyzer.close();
 
-    // 3) Sort vocabulary
+    // sort vocab
     vocabulary.addAll(docFreq.keySet());
     Collections.sort(vocabulary);
 
     int numDocs = docs.size();
-    // 4) Build each user's TF–IDF vector
+    // build each user's TF–IDF vector
     for (var entry : termFreqs.entrySet()) {
       int uid = entry.getKey();
       var freq = entry.getValue();
@@ -94,10 +91,7 @@ public class TfidfService {
     }
   }
 
-  /**
-   * Cosine similarity between two users' TF–IDF vectors.
-   * @return a value in [0,1], or 0 if either user is missing / has zero norm
-   */
+  // calculate osine similarity between two users' TF–IDF vectors
   public double cosine(int u1, int u2) {
     RealVector v1 = userVectors.get(u1);
     RealVector v2 = userVectors.get(u2);

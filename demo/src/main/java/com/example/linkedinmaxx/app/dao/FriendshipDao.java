@@ -1,4 +1,3 @@
-// src/main/java/com/example/linkedinmaxx/app/dao/FriendshipDao.java
 package com.example.linkedinmaxx.app.dao;
 
 import java.sql.Connection;
@@ -8,14 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO for creating and querying friendship edges between users.
- */
+//DAO for creating and querying friendship edges between users.
+
 public class FriendshipDao {
 
-    /**
-     * Inserts a directed edge (user → friend) into the friendships table.
-     */
+    //Inserts a directed edge into the friendships table.
     public void add(int userId, int friendId) {
         String sql = "INSERT INTO friendships (user_id, friend_id) VALUES (?, ?)";
         try (Connection conn = DB.get();
@@ -32,9 +28,7 @@ public class FriendshipDao {
         }
     }
 
-    /**
-     * Returns every directed friendship edge in the table.
-     */
+    //Returns every directed friendship edge in the table.
     public List<Friendship> findAll() {
         String sql = "SELECT user_id, friend_id FROM friendships";
         List<Friendship> edges = new ArrayList<>();
@@ -54,9 +48,8 @@ public class FriendshipDao {
         return edges;
     }
 
-    /**
-     * Returns the list of friend‐IDs (outgoing edges) for a given user.
-     */
+    //Returns the list of friend ids for a given user
+    
     public List<Integer> findFriends(int userId) {
         String sql = "SELECT friend_id FROM friendships WHERE user_id = ?";
         List<Integer> friends = new ArrayList<>();

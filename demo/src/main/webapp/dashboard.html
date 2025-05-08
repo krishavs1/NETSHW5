@@ -17,7 +17,7 @@
   />
 
   <style>
-    /* Dashboard feature cards */
+    
     .feature-card {
       padding: 2rem;
       border-radius: 1rem;
@@ -32,7 +32,7 @@
       margin-bottom: 0.5rem;
     }
 
-    /* Graph container */
+
     #network {
       width: 100%;
       height: 400px;
@@ -51,17 +51,17 @@
   
 
   <div class="container my-5 text-center">
-    <!-- 1) Welcome & intro -->
+    <!-- Welcome & intro -->
     <h2 class="mb-2 fw-bold text-primary">Welcome to LinkedInMaxx</h2>
     <p class="lead mb-5">
       Build smarter connections with social and interest‑based networking
     </p>
 
-    <!-- 2) Social graph (moved before the feature cards) -->
+    <!-- Social graph -->
     <h2 class="mb-4 fw-bold text-primary">The LinkedInMaxx Social Network: Visualized</h2>
     <div id="network"></div>
 
-    <!-- 3) Feature cards -->
+    <!-- Feature cards -->
     <div class="row g-4">
       <div class="col-md-6">
         <a href="recommend.html" class="text-decoration-none text-dark">
@@ -95,7 +95,7 @@
   </div>
 
   <script>
-    // 1) ask the server who’s logged in
+    // ask the server who’s logged in
     fetch("/api/me", { credentials: "same-origin" })
       .then(r => {
         if (!r.ok) throw new Error("not logged in");
@@ -115,7 +115,6 @@
   </script>
   
 
-  <!-- vis-network UMD bundle -->
   <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
   <script>
     fetch('/api/graph')

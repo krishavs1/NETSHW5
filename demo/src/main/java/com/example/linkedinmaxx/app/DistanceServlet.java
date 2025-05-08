@@ -63,7 +63,6 @@ public class DistanceServlet extends HttpServlet {
       }
 
       if (!found) {
-        // no path
         resp.setContentType("application/json");
         resp.getWriter().write(gson.toJson(
           Map.of("distance", -1, "path", List.of())
@@ -78,7 +77,7 @@ public class DistanceServlet extends HttpServlet {
       }
       Collections.reverse(rev);
 
-      // map IDs → usernames
+      // map IDs to usernames
       List<String> pathNames = new ArrayList<>();
       for (int id : rev) {
         pathNames.add(userDao.findById(id).get().getUsername());

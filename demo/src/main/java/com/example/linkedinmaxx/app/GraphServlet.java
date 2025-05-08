@@ -1,4 +1,3 @@
-// src/main/java/com/example/linkedinmaxx/app/GraphServlet.java
 package com.example.linkedinmaxx.app;
 
 import com.example.linkedinmaxx.app.dao.Friendship;

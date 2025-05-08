@@ -3,12 +3,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-/**
- * DAO for inserting user hobbies (interests) into the database.
- */
+//DAO for inserting user hobbies into the database (we ended up taking this one out)
+
 public class HobbyDao {
     /**
-     * Saves a single hobby/interest for the given user.
+     * Saves a single hobby for a given user
      * @param userId the user’s database ID
      * @param hobby  the hobby text to save
      */

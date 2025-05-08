@@ -35,7 +35,7 @@ public class ProfileServlet extends HttpServlet {
     }
 
     try {
-      // look up the “other” user by username
+      // look up the  user by username
       Optional<User> maybeTarget = userDao.findByUsername(usernameParam);
       if (maybeTarget.isEmpty()) {
         resp.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
@@ -44,11 +44,11 @@ public class ProfileServlet extends HttpServlet {
       User target = maybeTarget.get();
       int other = target.getId();
 
-      // 1) load their experiences & skills
+      // load their experiences & skills
       List<String> exps   = expDao.findByUser(other);
       List<String> skills = skillDao.findByUser(other);
 
-      // 2) compute shared
+      // compute shared
       Set<String> myExps   = new HashSet<>(expDao.findByUser(me));
       Set<String> mySkills = new HashSet<>(skillDao.findByUser(me));
       List<String> sharedExps   = new ArrayList<>();
@@ -56,7 +56,7 @@ public class ProfileServlet extends HttpServlet {
       for (String e : exps)    if (myExps.contains(e))   sharedExps.add(e);
       for (String s : skills)  if (mySkills.contains(s)) sharedSkills.add(s);
 
-      // 3) BFS + track predecessors to build path
+      // BFS to build path
       Map<Integer,Integer> dist = new HashMap<>();
       Map<Integer,Integer> prev = new HashMap<>();
       ArrayDeque<Integer> q = new ArrayDeque<>();
@@ -83,7 +83,7 @@ public class ProfileServlet extends HttpServlet {
         Collections.reverse(path);
       }
 
-      // 4) build JSON response
+      // build json
       Map<String,Object> out = new LinkedHashMap<>();
       out.put("id",                 other);
       out.put("username",           target.getUsername());
@@ -98,10 +98,9 @@ public class ProfileServlet extends HttpServlet {
       out.put("sharedExperiences",  sharedExps);
       out.put("sharedSkills",       sharedSkills);
       out.put("distance",           distance);
-      // Convert the ID‐based path into a username path
+      // convert the ID‐based path into a username path
 List<String> pathNames = new ArrayList<>(path.size());
 for (Integer uid : path) {
-  // you already have userDao and findById
   userDao.findById(uid)
          .ifPresent(u -> pathNames.add(u.getUsername()));
 }
